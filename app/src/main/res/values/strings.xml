@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Diário De Bolso</string>
+    <string name="user"> Nome de Usuário </string>
+    <string name="password">Senha</string>
+    <string name="login">Entrar</string>
+    <string name="createAcc">Cadastre-se</string>
+
+    <string name="newEntry">Nova Entrada</string>
+
+    <string name="dateTime">Data e hora</string>
+    <string name="title">Título</string>
+    <string name="description">Descrição</string>
+    <string name="location">Localização</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Remover</string>
+
+    <string name="preview">Prévia da Imagem</string>
+    <string name="addLocation">Adicionar Localização</string>
+    <string name="save">Salvar</string>
+</resources>
