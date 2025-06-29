@@ -23,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_USER_NAME = "username";
     private static final String COLUMN_USER_PASSWORD_HASH = "password_hash";
     private static final String COLUMN_USER_PHOTO = "photo_path";
+
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "("
             + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_USER_NAME + " TEXT UNIQUE,"
@@ -107,7 +108,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return user;
     }
 
-
     // --- Métodos para Entradas do Diário ---
 
     public boolean addEntry(DiaryEntry entry) {
@@ -115,8 +115,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_ENTRY_TITLE, entry.getTitle());
         values.put(COLUMN_ENTRY_CONTENT, entry.getContent());
+        values.put(COLUMN_ENTRY_PHOTO, entry.getPhotoPath());
+        values.put(COLUMN_ENTRY_LOCATION, entry.getLocation());
         values.put(COLUMN_ENTRY_DATE, entry.getDate());
-        // values.put(COLUMN_ENTRY_USER_ID, entry.getUserId()); // Vamos implementar isso depois
+        values.put(COLUMN_ENTRY_USER_ID, entry.getUserId());
 
         long result = db.insert(TABLE_ENTRIES, null, values);
         db.close();
@@ -135,12 +137,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 entry.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_ID)));
                 entry.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_TITLE)));
                 entry.setContent(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_CONTENT)));
+                entry.setPhotoPath(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_PHOTO)));
+                entry.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_LOCATION)));
                 entry.setDate(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_DATE)));
+                entry.setUserId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_USER_ID)));
                 entryList.add(entry);
             } while (cursor.moveToNext());
         }
+
         cursor.close();
         db.close();
         return entryList;
+    }
+
+    public DiaryEntry getEntryById(long id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ENTRIES, null,
+                COLUMN_ENTRY_ID + " = ?", new String[]{String.valueOf(id)},
+                null, null, null);
+
+        DiaryEntry entry = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            entry = new DiaryEntry();
+            entry.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_ID)));
+            entry.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_TITLE)));
+            entry.setContent(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_CONTENT)));
+            entry.setPhotoPath(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_PHOTO)));
+            entry.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_LOCATION)));
+            entry.setDate(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_DATE)));
+            entry.setUserId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_USER_ID)));
+            cursor.close();
+        }
+
+        db.close();
+        return entry;
+    }
+
+    public boolean updateEntry(DiaryEntry entry) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_ENTRY_TITLE, entry.getTitle());
+        values.put(COLUMN_ENTRY_CONTENT, entry.getContent());
+        values.put(COLUMN_ENTRY_PHOTO, entry.getPhotoPath());
+        values.put(COLUMN_ENTRY_LOCATION, entry.getLocation());
+        values.put(COLUMN_ENTRY_DATE, entry.getDate());
+
+        int rows = db.update(TABLE_ENTRIES, values, COLUMN_ENTRY_ID + " = ?", new String[]{String.valueOf(entry.getId())});
+        db.close();
+        return rows > 0;
+    }
+
+    public boolean deleteEntryById(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = db.delete(TABLE_ENTRIES, COLUMN_ENTRY_ID + " = ?", new String[]{String.valueOf(id)});
+        db.close();
+        return rows > 0;
     }
 }

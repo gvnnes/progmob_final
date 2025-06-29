@@ -1,6 +1,7 @@
 package com.example.diariodebolso.service;
 
 import android.content.Context;
+
 import com.example.diariodebolso.data.DatabaseHelper;
 import com.example.diariodebolso.model.DiaryEntry;
 
@@ -32,5 +33,23 @@ public class DiaryService {
 
     public List<DiaryEntry> getEntries() {
         return dbHelper.getAllEntries();
+    }
+
+    // update
+    public boolean updateEntry(DiaryEntry entry) {
+        if (entry == null || entry.getId() == 0 || entry.getTitle() == null || entry.getTitle().trim().isEmpty()) {
+            return false;
+        }
+        return dbHelper.updateEntry(entry);
+    }
+
+    // delete
+    public boolean deleteEntry(long id) {
+        return dbHelper.deleteEntryById(id);
+    }
+
+    // find
+    public DiaryEntry getEntryById(long id) {
+        return dbHelper.getEntryById(id);
     }
 }
