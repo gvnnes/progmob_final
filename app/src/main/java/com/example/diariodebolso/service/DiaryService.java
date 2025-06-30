@@ -11,24 +11,36 @@ import java.util.List;
 import java.util.Locale;
 
 public class DiaryService {
-
     private DatabaseHelper dbHelper;
-
     public DiaryService(Context context) {
         this.dbHelper = new DatabaseHelper(context);
     }
 
-    public boolean createEntry(String title, String content) {
-        if (title == null || title.trim().isEmpty()) {
-            return false; // Título é obrigatório
+    public boolean createEntry(String title, String content, String date, String photoPath) {
+        try {
+            if (title == null || title.trim().isEmpty()) {
+                return false;
+            }
+
+            // Usa a data passada como parâmetro, ou a atual se for null
+            String entryDate = (date != null && !date.isEmpty()) ? date :
+                    new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date());
+
+            DiaryEntry entry = new DiaryEntry(
+                    title.trim(),
+                    content != null ? content.trim() : "",
+                    entryDate
+            );
+
+            entry.setPhotoPath(photoPath);
+           // entry.setLocation(location);
+           // entry.setUserId(currentUserId); // Você precisa gerenciar o ID do usuário logado
+
+            return dbHelper.addEntry(entry);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-
-        DiaryEntry entry = new DiaryEntry();
-        entry.setTitle(title);
-        entry.setContent(content);
-        entry.setDate(new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date()));
-
-        return dbHelper.addEntry(entry);
     }
 
     public List<DiaryEntry> getEntries() {

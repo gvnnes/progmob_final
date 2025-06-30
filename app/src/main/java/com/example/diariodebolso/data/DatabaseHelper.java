@@ -125,6 +125,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    public List<DiaryEntry> getEntriesByUserId(long userId) {
+        List<DiaryEntry> entryList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + TABLE_ENTRIES +
+                " WHERE " + COLUMN_ENTRY_USER_ID + " = ?" +
+                " ORDER BY " + COLUMN_ENTRY_ID + " DESC";
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(userId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                DiaryEntry entry = new DiaryEntry();
+                entry.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_ID)));
+                entry.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_TITLE)));
+                entry.setContent(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_CONTENT)));
+                entry.setPhotoPath(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_PHOTO)));
+                entry.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_LOCATION)));
+                entry.setDate(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_DATE)));
+                entry.setUserId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_USER_ID)));
+                entryList.add(entry);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return entryList;
+    }
+
+
     public List<DiaryEntry> getAllEntries() {
         List<DiaryEntry> entryList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_ENTRIES + " ORDER BY " + COLUMN_ENTRY_ID + " DESC";
