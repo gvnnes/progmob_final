@@ -9,6 +9,15 @@ public class DiaryEntry {
     private String date;
     private long userId;
 
+    public DiaryEntry(String title, String content, String date) {
+        this.title = title;
+        this.content = content;
+        this.date = date;
+    }
+    public DiaryEntry() {
+        // Construtor vazio necessário para o uso do Parcelable
+    }
+
     // Getters e Setters
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
