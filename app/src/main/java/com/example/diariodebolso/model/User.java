@@ -1,43 +1,43 @@
 package com.example.diariodebolso.model;
 
 public class User {
-    private long id;
-    private String username;
-    private String passwordHash;
-    private String photoPath;
+        private long id;
+        private String username;
+        private String passwordHash;
+        private String photoPath;
 
-    public User() {
-    }
+        public User() {
+        }
 
-    public long getId() {
-        return id;
-    }
+        public long getId() {
+            return id;
+        }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+        public void setId(long id) {
+            this.id = id;
+        }
 
-    public String getUsername() {
-        return username;
-    }
+        public String getUsername() {
+            return username;
+        }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+        public void setUsername(String username) {
+            this.username = username;
+        }
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+        public String getPasswordHash() {
+            return passwordHash;
+        }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
+        public void setPasswordHash(String passwordHash) {
+            this.passwordHash = passwordHash;
+        }
 
-    public String getPhotoPath() {
-        return photoPath;
-    }
+        public String getPhotoPath() {
+            return photoPath;
+        }
 
-    public void setPhotoPath(String photoPath) {
-        this.photoPath = photoPath;
-    }
+        public void setPhotoPath(String photoPath) {
+            this.photoPath = photoPath;
+        }
 }

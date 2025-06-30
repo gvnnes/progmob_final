@@ -16,7 +16,6 @@ public class AuthService {
     }
 
     public boolean registerUser(String username, String password) {
-        // ... (código existente sem alterações)
         if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             return false;
         }
@@ -48,7 +47,6 @@ public class AuthService {
     }
 
     public boolean updateUserPhoto(String username, String photoPath) {
-        // ... (código existente sem alterações)
         if (username == null || photoPath == null) {
             return false;
         }

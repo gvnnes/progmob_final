@@ -40,7 +40,6 @@ public class DiaryEntryAdapter extends RecyclerView.Adapter<DiaryEntryAdapter.En
         holder.title.setText(entry.getTitle());
         holder.date.setText(entry.getDate());
 
-        // Define a pré-visualização do conteúdo
         if (entry.getContent() != null && !entry.getContent().isEmpty()) {
             holder.contentPreview.setText(entry.getContent());
             holder.contentPreview.setVisibility(View.VISIBLE);
@@ -48,7 +47,6 @@ public class DiaryEntryAdapter extends RecyclerView.Adapter<DiaryEntryAdapter.En
             holder.contentPreview.setVisibility(View.GONE);
         }
 
-        // Exibe a thumbnail se houver um caminho de foto
         if (entry.getPhotoPath() != null && !entry.getPhotoPath().isEmpty()) {
             holder.thumbnail.setImageURI(Uri.parse(entry.getPhotoPath()));
             holder.thumbnail.setVisibility(View.VISIBLE);

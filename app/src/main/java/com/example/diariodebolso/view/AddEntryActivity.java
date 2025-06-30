@@ -31,20 +31,20 @@ import java.util.Calendar;
 public class AddEntryActivity extends AppCompatActivity {
 
     private EditText editTextTitle, editTextContent, editTextDate;
-    private Button buttonSave, buttonAddPhoto, buttonAddLocation; // Botão de localização adicionado
+    private Button buttonSave, buttonAddPhoto, buttonAddLocation;
     private DiaryService diaryService;
     private Calendar calendar;
     private Uri cameraImageUri;
     private Uri selectedImageUri = null;
     private long userId;
-    private String locationString = null; // Variável para guardar a localização
+    private String locationString = null;
 
     private ActivityResultLauncher<String> requestCameraPermissionLauncher;
-    private ActivityResultLauncher<String> requestLocationPermissionLauncher; // Lançador para permissão de localização
+    private ActivityResultLauncher<String> requestLocationPermissionLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Uri> cameraLauncher;
 
-    private FusedLocationProviderClient fusedLocationClient; // Cliente de localização
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class AddEntryActivity extends AppCompatActivity {
 
         initializeLaunchers();
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this); // Inicializa o cliente
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         userId = getIntent().getLongExtra("USER_ID", -1);
 
@@ -61,7 +61,7 @@ public class AddEntryActivity extends AppCompatActivity {
         editTextContent = findViewById(R.id.editTextEntryContent);
         editTextDate = findViewById(R.id.editTextDate);
         buttonAddPhoto = findViewById(R.id.buttonAddPhoto);
-        buttonAddLocation = findViewById(R.id.buttonAddLocation); // Referencia o botão
+        buttonAddLocation = findViewById(R.id.buttonAddLocation);
         buttonSave = findViewById(R.id.buttonSaveEntry);
         calendar = Calendar.getInstance();
         editTextDate.setInputType(InputType.TYPE_NULL);
@@ -69,7 +69,7 @@ public class AddEntryActivity extends AppCompatActivity {
 
         buttonAddPhoto.setOnClickListener(v -> selectImage());
 
-        buttonAddLocation.setOnClickListener(v -> checkLocationPermission()); // Ação para o botão
+        buttonAddLocation.setOnClickListener(v -> checkLocationPermission());
 
         editTextDate.setOnClickListener(view -> {
             int year = calendar.get(Calendar.YEAR);
@@ -92,7 +92,7 @@ public class AddEntryActivity extends AppCompatActivity {
             String date = editTextDate.getText().toString().trim();
             String imagePath = selectedImageUri != null ? selectedImageUri.toString() : "";
 
-            if (diaryService.createEntry(title, content, date, imagePath, locationString, userId)) { // Passa a localização
+            if (diaryService.createEntry(title, content, date, imagePath, locationString, userId)) {
                 Toast.makeText(this, "Entrada salva com sucesso!", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
@@ -110,7 +110,6 @@ public class AddEntryActivity extends AppCompatActivity {
             }
         });
 
-        // Lançador para permissão de localização
         requestLocationPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 getCurrentLocation();

@@ -82,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
         takePictureLauncher = registerForActivityResult(new ActivityResultContracts.TakePicture(), success -> {
             if (success && imageUri != null) {
                 imageViewProfile.setImageURI(imageUri);
-                currentPhotoPath = imageUri.getPath(); // O caminho já foi salvo ao criar o arquivo
+                currentPhotoPath = imageUri.getPath();
             }
         });
 

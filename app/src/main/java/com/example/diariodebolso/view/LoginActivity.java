@@ -34,11 +34,11 @@ public class LoginActivity extends AppCompatActivity {
             String user = editTextUser.getText().toString().trim();
             String pass = editTextPassword.getText().toString().trim();
 
-            User loggedInUser = authService.login(user, pass); // <<< CORREÇÃO APLICADA
+            User loggedInUser = authService.login(user, pass);
             if (loggedInUser != null) {
                 Toast.makeText(this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("USER_ID", loggedInUser.getId()); // <<< CORREÇÃO APLICADA: Passa o ID do usuário
+                intent.putExtra("USER_ID", loggedInUser.getId());
                 startActivity(intent);
                 finish();
             } else {

@@ -17,7 +17,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "diario.db";
     private static final int DATABASE_VERSION = 1;
 
-    // Tabela de Usuários
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_USER_ID = "id";
     private static final String COLUMN_USER_NAME = "username";
@@ -30,7 +29,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_USER_PASSWORD_HASH + " TEXT,"
             + COLUMN_USER_PHOTO + " TEXT" + ")";
 
-    // Tabela de Entradas do Diário
     private static final String TABLE_ENTRIES = "entries";
     private static final String COLUMN_ENTRY_ID = "id";
     private static final String COLUMN_ENTRY_TITLE = "title";
@@ -106,7 +104,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return user;
     }
 
-    // --- Métodos para Entradas do Diário ---
 
     public boolean addEntry(DiaryEntry entry) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -126,8 +123,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<DiaryEntry> entryList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // A cláusula LIKE com '%' permite que a data seja encontrada
-        // mesmo que a hora esteja junto (ex: "29/06/2025" encontrará "29/06/2025 14:30")
         String selectQuery = "SELECT * FROM " + TABLE_ENTRIES +
                 " WHERE " + COLUMN_ENTRY_USER_ID + " = ? AND " + COLUMN_ENTRY_DATE + " LIKE ?" +
                 " ORDER BY " + COLUMN_ENTRY_ID + " DESC";

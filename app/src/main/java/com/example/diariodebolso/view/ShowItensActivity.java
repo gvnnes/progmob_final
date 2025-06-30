@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView; // Import para ImageView
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,7 +78,6 @@ public class ShowItensActivity extends AppCompatActivity {
             textViewDate.setText(currentEntry.getDate());
             textViewContent.setText(currentEntry.getContent());
 
-            // --- LÓGICA PARA EXIBIR FOTO E LOCALIZAÇÃO ---
             if (currentEntry.getPhotoPath() != null && !currentEntry.getPhotoPath().isEmpty()) {
                 imageViewPhoto.setImageURI(Uri.parse(currentEntry.getPhotoPath()));
                 imageViewPhoto.setVisibility(View.VISIBLE);

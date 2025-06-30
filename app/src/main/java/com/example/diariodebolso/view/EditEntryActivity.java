@@ -75,7 +75,7 @@ public class EditEntryActivity extends AppCompatActivity {
         initializeLaunchers();
         loadEntryData();
 
-        buttonAddPhoto.setOnClickListener(v -> selectImage()); // Adiciona a ação ao botão de foto
+        buttonAddPhoto.setOnClickListener(v -> selectImage());
         buttonAddLocation.setOnClickListener(v -> checkLocationPermission());
         buttonSave.setOnClickListener(v -> saveChanges());
 
@@ -224,7 +224,6 @@ public class EditEntryActivity extends AppCompatActivity {
         currentEntry.setContent(content);
         currentEntry.setDate(date);
         currentEntry.setLocation(locationString);
-        // Se uma nova imagem foi selecionada, atualiza o caminho. Senão, mantém o antigo.
         if (selectedImageUri != null) {
             currentEntry.setPhotoPath(selectedImageUri.toString());
         }

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Diário De Bolso</string>
-    <string name="user"> Nome de Usuário </string>
+    <string name="user">Nome de Utilizador</string>
     <string name="password">Senha</string>
     <string name="login">Entrar</string>
     <string name="createAcc">Cadastre-se</string>
@@ -21,4 +21,6 @@
     <string name="select_date">Selecionar Data</string>
     <string name="date">Data</string>
     <string name="viewMore">Ver mais</string>
+
+    <string name="empty_list_message">Ainda não tem nenhuma entrada.\nClique no \'+\' para começar!</string>
 </resources>
