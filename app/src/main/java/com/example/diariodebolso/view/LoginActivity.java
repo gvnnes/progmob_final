@@ -7,9 +7,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.diariodebolso.MainActivity;
 import com.example.diariodebolso.R;
+import com.example.diariodebolso.model.User;
 import com.example.diariodebolso.service.AuthService;
 
 public class LoginActivity extends AppCompatActivity {
@@ -25,7 +25,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         authService = new AuthService(this);
-
         editTextUser = findViewById(R.id.editTextUser);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
@@ -35,9 +34,11 @@ public class LoginActivity extends AppCompatActivity {
             String user = editTextUser.getText().toString().trim();
             String pass = editTextPassword.getText().toString().trim();
 
-            if (authService.login(user, pass)) {
+            User loggedInUser = authService.login(user, pass); // <<< CORREÇÃO APLICADA
+            if (loggedInUser != null) {
                 Toast.makeText(this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("USER_ID", loggedInUser.getId()); // <<< CORREÇÃO APLICADA: Passa o ID do usuário
                 startActivity(intent);
                 finish();
             } else {

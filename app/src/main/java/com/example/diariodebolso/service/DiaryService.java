@@ -1,10 +1,8 @@
 package com.example.diariodebolso.service;
 
 import android.content.Context;
-
 import com.example.diariodebolso.data.DatabaseHelper;
 import com.example.diariodebolso.model.DiaryEntry;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -12,29 +10,24 @@ import java.util.Locale;
 
 public class DiaryService {
     private DatabaseHelper dbHelper;
+
     public DiaryService(Context context) {
         this.dbHelper = new DatabaseHelper(context);
     }
 
-    public boolean createEntry(String title, String content, String date, String photoPath) {
+    public boolean createEntry(String title, String content, String date, String photoPath, String location, long userId) {
         try {
             if (title == null || title.trim().isEmpty()) {
                 return false;
             }
 
-            // Usa a data passada como parâmetro, ou a atual se for null
             String entryDate = (date != null && !date.isEmpty()) ? date :
                     new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date());
 
-            DiaryEntry entry = new DiaryEntry(
-                    title.trim(),
-                    content != null ? content.trim() : "",
-                    entryDate
-            );
-
+            DiaryEntry entry = new DiaryEntry(title.trim(), content != null ? content.trim() : "", entryDate);
             entry.setPhotoPath(photoPath);
-           // entry.setLocation(location);
-           // entry.setUserId(currentUserId); // Você precisa gerenciar o ID do usuário logado
+            entry.setLocation(location);
+            entry.setUserId(userId);
 
             return dbHelper.addEntry(entry);
         } catch (Exception e) {
@@ -43,11 +36,14 @@ public class DiaryService {
         }
     }
 
-    public List<DiaryEntry> getEntries() {
-        return dbHelper.getAllEntries();
+    public List<DiaryEntry> getEntriesByUserId(long userId) {
+        return dbHelper.getEntriesByUserId(userId);
     }
 
-    // update
+    public List<DiaryEntry> getEntriesByDate(long userId, String date) {
+        return dbHelper.getEntriesByDate(userId, date);
+    }
+
     public boolean updateEntry(DiaryEntry entry) {
         if (entry == null || entry.getId() == 0 || entry.getTitle() == null || entry.getTitle().trim().isEmpty()) {
             return false;
@@ -55,12 +51,10 @@ public class DiaryService {
         return dbHelper.updateEntry(entry);
     }
 
-    // delete
     public boolean deleteEntry(long id) {
         return dbHelper.deleteEntryById(id);
     }
 
-    // find
     public DiaryEntry getEntryById(long id) {
         return dbHelper.getEntryById(id);
     }

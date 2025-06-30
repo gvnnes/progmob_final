@@ -68,8 +68,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // --- Métodos para Usuários ---
-
     public boolean addUser(String username, String passwordHash) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -124,6 +122,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return result != -1;
     }
+    public List<DiaryEntry> getEntriesByDate(long userId, String date) {
+        List<DiaryEntry> entryList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // A cláusula LIKE com '%' permite que a data seja encontrada
+        // mesmo que a hora esteja junto (ex: "29/06/2025" encontrará "29/06/2025 14:30")
+        String selectQuery = "SELECT * FROM " + TABLE_ENTRIES +
+                " WHERE " + COLUMN_ENTRY_USER_ID + " = ? AND " + COLUMN_ENTRY_DATE + " LIKE ?" +
+                " ORDER BY " + COLUMN_ENTRY_ID + " DESC";
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(userId), date + "%"});
+
+        if (cursor.moveToFirst()) {
+            do {
+                DiaryEntry entry = new DiaryEntry();
+                entry.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_ID)));
+                entry.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_TITLE)));
+                entry.setContent(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_CONTENT)));
+                entry.setPhotoPath(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_PHOTO)));
+                entry.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_LOCATION)));
+                entry.setDate(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_DATE)));
+                entry.setUserId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ENTRY_USER_ID)));
+                entryList.add(entry);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return entryList;
+    }
+
 
     public List<DiaryEntry> getEntriesByUserId(long userId) {
         List<DiaryEntry> entryList = new ArrayList<>();

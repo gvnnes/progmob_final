@@ -4,9 +4,7 @@ public class User {
     private long id;
     private String username;
     private String passwordHash;
-    private String photoPath; // Por enquanto, vamos guardar o caminho da foto
-
-    // Construtores, Getters e Setters
+    private String photoPath;
 
     public User() {
     }

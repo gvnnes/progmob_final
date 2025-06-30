@@ -3,7 +3,6 @@ package com.example.diariodebolso.service;
 import android.content.Context;
 import com.example.diariodebolso.data.DatabaseHelper;
 import com.example.diariodebolso.model.User;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,58 +15,40 @@ public class AuthService {
         this.dbHelper = new DatabaseHelper(context);
     }
 
-    /**
-     * Registra um novo usuário no banco de dados.
-     * @param username O nome de usuário.
-     * @param password A senha em texto plano.
-     * @return true se o registro for bem-sucedido, false caso contrário (ex: usuário já existe).
-     */
     public boolean registerUser(String username, String password) {
+        // ... (código existente sem alterações)
         if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            return false; // Falha na validação de campos vazios
+            return false;
         }
-
-        // Verifica se o usuário já existe
         if (dbHelper.findUserByUsername(username) != null) {
-            return false; // Usuário já cadastrado
+            return false;
         }
-
         String passwordHash = hashPassword(password);
         if (passwordHash == null) {
-            return false; // Falha ao gerar o hash da senha
+            return false;
         }
-
         return dbHelper.addUser(username, passwordHash);
     }
 
-    /**
-     * Realiza o login de um usuário.
-     * @param username O nome de usuário.
-     * @param password A senha em texto plano.
-     * @return true se o login for bem-sucedido, false caso contrário.
-     */
-    public boolean login(String username, String password) {
+    public User login(String username, String password) {
         User user = dbHelper.findUserByUsername(username);
         if (user == null) {
-            return false; // Usuário não encontrado
+            return null;
         }
 
         String passwordHash = hashPassword(password);
         if (passwordHash == null) {
-            return false; // Falha ao gerar o hash da senha
+            return null;
         }
 
-        // Compara o hash da senha digitada com o hash salvo no banco
-        return passwordHash.equals(user.getPasswordHash());
+        if (passwordHash.equals(user.getPasswordHash())) {
+            return user;
+        }
+        return null;
     }
 
-    /**
-     * Atualiza o caminho da foto de perfil de um usuário.
-     * @param username O nome de usuário a ser atualizado.
-     * @param photoPath O novo caminho para a foto.
-     * @return true se a atualização for bem-sucedida, false caso contrário.
-     */
     public boolean updateUserPhoto(String username, String photoPath) {
+        // ... (código existente sem alterações)
         if (username == null || photoPath == null) {
             return false;
         }
@@ -88,7 +69,6 @@ public class AuthService {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            // Em um app real, seria bom ter um log mais robusto aqui.
             e.printStackTrace();
             return null;
         }

@@ -39,7 +39,6 @@ public class RegisterActivity extends AppCompatActivity {
     private Uri imageUri;
     private String currentPhotoPath;
 
-    // Lançadores para Permissões e Atividades
     private ActivityResultLauncher<String> requestCameraPermissionLauncher;
     private ActivityResultLauncher<String> requestGalleryPermissionLauncher;
     private ActivityResultLauncher<Uri> takePictureLauncher;
@@ -63,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initializeLaunchers() {
-        // Lançador para permissão da Câmera
+
         requestCameraPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 openCamera();
@@ -72,7 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        // Lançador para permissão da Galeria
         requestGalleryPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 openGallery();
@@ -81,7 +79,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        // Lançador para tirar a foto
         takePictureLauncher = registerForActivityResult(new ActivityResultContracts.TakePicture(), success -> {
             if (success && imageUri != null) {
                 imageViewProfile.setImageURI(imageUri);
@@ -89,12 +86,11 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        // Lançador para pegar imagem da galeria
         pickImageLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
             if (uri != null) {
                 imageUri = uri;
                 imageViewProfile.setImageURI(imageUri);
-                // Salva uma cópia da imagem da galeria no armazenamento interno
+
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                     saveImageToInternalStorage(bitmap);

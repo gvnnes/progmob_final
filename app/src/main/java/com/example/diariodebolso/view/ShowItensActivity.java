@@ -1,90 +1,113 @@
-public class ShowItensActivity {
-    
-}
 package com.example.diariodebolso.view;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.InputType;
-import android.view.View;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageView; // Import para ImageView
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toast;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-import com.example.diariodebolso.MainActivity;
 import com.example.diariodebolso.R;
-import com.example.diariodebolso.data.DatabaseHelper;
+import com.example.diariodebolso.model.DiaryEntry;
 import com.example.diariodebolso.service.DiaryService;
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
 
 public class ShowItensActivity extends AppCompatActivity {
 
-    private TextView textViewTitle;
-    private TextView textViewDate;
-    private DatabaseHelper dbHelper;
-    private Button buttonEdit;
+    private TextView textViewTitle, textViewDate, textViewContent, textViewLocation;
+    private ImageView imageViewPhoto;
+    private Button buttonEdit, buttonDelete;
+    private DiaryService diaryService;
+    private long entryId = -1;
+    private DiaryEntry currentEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.item_diary_entry); // Substitua pelo nome do seu layout XML
+        setContentView(R.layout.activity_show_item);
 
-        // 1. Referenciar os TextViews
         textViewTitle = findViewById(R.id.textViewEntryTitle);
         textViewDate = findViewById(R.id.textViewEntryDate);
+        textViewContent = findViewById(R.id.textViewEntryContent);
+        textViewLocation = findViewById(R.id.textViewEntryLocation);
+        imageViewPhoto = findViewById(R.id.imageViewPhoto);
+        buttonEdit = findViewById(R.id.buttonEdit);
+        buttonDelete = findViewById(R.id.buttonDelete);
 
-        // 2. Obter dados do banco
-        dbHelper = new DatabaseHelper(this);
-        Cursor cursor = (Cursor) dbHelper.getAllEntries();
+        diaryService = new DiaryService(this);
+        entryId = getIntent().getLongExtra("ENTRY_ID", -1);
 
-        if (cursor.moveToFirst()) {
-            // Pegue o primeiro registro (exemplo)
-            String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
-            String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-
-            // 3. Atualizar os TextViews
-            textViewTitle.setText(title);
-            textViewDate.setText(date);
+        if (entryId != -1) {
+            loadEntryDetails();
+        } else {
+            Toast.makeText(this, "Erro: ID da entrada não encontrado.", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
-        cursor.close();
+        buttonEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(ShowItensActivity.this, EditEntryActivity.class);
+            intent.putExtra("ENTRY_ID", entryId);
+            startActivity(intent);
+        });
 
-        buttonEdit = findViewById(R.id.buttonEdit);
+        buttonDelete.setOnClickListener(v -> {
+            if (diaryService.deleteEntry(entryId)) {
+                Toast.makeText(this, "Entrada apagada com sucesso.", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Erro ao apagar a entrada.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        buttonEdit.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Aqui vai a ação ao clicar no botão Editar
-                        Toast.makeText(
-                                ShowItensActivity.this,
-                                "Botão Editar clicado",
-                                Toast.LENGTH_SHORT
-                        ).show();
-                        // Exemplo: abrir outra tela de edição
-                        //Intent intent = new Intent(ShowItensActivity.this, EditActivity.class);
-                        //startActivity(intent);
-                    }
-                }
-        );
+        textViewLocation.setOnClickListener(v -> openMap());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (entryId != -1) {
+            loadEntryDetails();
+        }
+    }
+
+    private void loadEntryDetails() {
+        currentEntry = diaryService.getEntryById(entryId);
+        if (currentEntry != null) {
+            textViewTitle.setText(currentEntry.getTitle());
+            textViewDate.setText(currentEntry.getDate());
+            textViewContent.setText(currentEntry.getContent());
+
+            // --- LÓGICA PARA EXIBIR FOTO E LOCALIZAÇÃO ---
+            if (currentEntry.getPhotoPath() != null && !currentEntry.getPhotoPath().isEmpty()) {
+                imageViewPhoto.setImageURI(Uri.parse(currentEntry.getPhotoPath()));
+                imageViewPhoto.setVisibility(View.VISIBLE);
+            } else {
+                imageViewPhoto.setVisibility(View.GONE);
+            }
+
+            if (currentEntry.getLocation() != null && !currentEntry.getLocation().isEmpty()) {
+                textViewLocation.setText("Ver localização no mapa");
+                textViewLocation.setVisibility(View.VISIBLE);
+            } else {
+                textViewLocation.setVisibility(View.GONE);
+            }
+        } else {
+            Toast.makeText(this, "Entrada não encontrada.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
+    private void openMap() {
+        if (currentEntry != null && currentEntry.getLocation() != null && !currentEntry.getLocation().isEmpty()) {
+            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + currentEntry.getLocation() + "(" + Uri.encode(currentEntry.getTitle()) + ")");
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            } else {
+                Toast.makeText(this, "Google Maps não está instalado.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
