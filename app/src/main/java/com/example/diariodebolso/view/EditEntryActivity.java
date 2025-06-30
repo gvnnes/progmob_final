@@ -115,9 +115,16 @@ public class EditEntryActivity extends AppCompatActivity {
 
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                selectedImageUri = result.getData().getData();
-                Toast.makeText(this, "Nova imagem selecionada", Toast.LENGTH_SHORT).show();
-                buttonAddPhoto.setText("Nova Foto Adicionada");
+                Uri uri = result.getData().getData();
+                if (uri != null) {
+                    // --- INÍCIO DA CORREÇÃO ---
+                    final int takeFlags = result.getData().getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                    // --- FIM DA CORREÇÃO ---
+                    selectedImageUri = uri;
+                    Toast.makeText(this, "Nova imagem selecionada", Toast.LENGTH_SHORT).show();
+                    buttonAddPhoto.setText("Nova Foto Adicionada");
+                }
             }
         });
 
@@ -181,7 +188,9 @@ public class EditEntryActivity extends AppCompatActivity {
     }
 
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // --- ALTERADO PARA ACTION_OPEN_DOCUMENT ---
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
         galleryLauncher.launch(intent);
     }
