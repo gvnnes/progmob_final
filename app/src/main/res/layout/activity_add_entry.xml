@@ -23,6 +23,27 @@
         android:gravity="top"
         android:inputType="textMultiLine" />
 
+    <EditText
+        android:id="@+id/editTextDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="@string/select_date" />
+
+    <Button
+        android:id="@+id/buttonAddPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/addPhoto" />
+
+    <Button
+        android:id="@+id/buttonAddLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/addLocation" />
+
+
     <Button
         android:id="@+id/buttonSaveEntry"
         android:layout_width="match_parent"
